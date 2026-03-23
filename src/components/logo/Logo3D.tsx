@@ -5,6 +5,8 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Environment, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 
+// Replaced Blue (#3B82F6, #2563EB) with Indigo (#4f46e5, #4338ca)
+
 /* ─────────────────────────────────────
    Central Diamond (The Teacher / Seed)
    ───────────────────────────────────── */
@@ -19,10 +21,10 @@ function CentralDiamond() {
     <mesh ref={ref} rotation={[0, 0, Math.PI / 4]} castShadow>
       <octahedronGeometry args={[0.6, 0]} />
       <meshStandardMaterial
-        color="#3B82F6"
+        color="#4f46e5"
         metalness={0.35}
         roughness={0.18}
-        emissive="#2563EB"
+        emissive="#4338ca"
         emissiveIntensity={0.4}
       />
     </mesh>
@@ -45,61 +47,69 @@ function Ring({ radius, tube, opacity, speed, tiltX, tiltZ }: RingProps) {
   const ref = useRef<THREE.Mesh>(null!);
 
   useFrame((_, delta) => {
+    ref.current.rotation.x = tiltX;
+    ref.current.rotation.z = tiltZ;
     ref.current.rotation.y += delta * speed;
   });
 
   return (
-    <mesh ref={ref} rotation={[tiltX, 0, tiltZ]}>
-      <torusGeometry args={[radius, tube, 32, 128]} />
+    <mesh ref={ref}>
+      <torusGeometry args={[radius, tube, 16, 100]} />
       <meshStandardMaterial
-        color="#3B82F6"
+        color="#6366f1"
+        metalness={0.4}
+        roughness={0.2}
         transparent
         opacity={opacity}
-        metalness={0.5}
-        roughness={0.2}
-        emissive="#3B82F6"
-        emissiveIntensity={0.12}
       />
     </mesh>
   );
 }
 
 /* ─────────────────────────────────────
-   Dotted outer orbit ring
+   Dotted Outer Ring (Students / Community)
    ───────────────────────────────────── */
 function DottedRing() {
   const groupRef = useRef<THREE.Group>(null!);
-  const dotCount = 48;
 
   useFrame((_, delta) => {
-    groupRef.current.rotation.y += delta * 0.06;
+    groupRef.current.rotation.y -= delta * 0.12;
+    groupRef.current.rotation.x = Math.sin(delta * 0.2) * 0.1; 
   });
 
-  return (
-    <group ref={groupRef} rotation={[Math.PI / 2, 0, 0.1]}>
-      {Array.from({ length: dotCount }).map((_, i) => {
-        const angle = (i / dotCount) * Math.PI * 2;
-        const r = 2.2;
-        return (
-          <mesh key={i} position={[Math.cos(angle) * r, Math.sin(angle) * r, 0]}>
-            <sphereGeometry args={[0.018, 8, 8]} />
-            <meshStandardMaterial color="#93C5FD" transparent opacity={0.3} />
-          </mesh>
-        );
-      })}
-    </group>
-  );
+  const count = 18; // number of dots
+  let rings = [];
+
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    const radius = 2.2;
+    const x = Math.cos(angle) * radius;
+    const z = Math.sin(angle) * radius;
+    rings.push(
+      <mesh key={i} position={[x, 0, z]}>
+        <sphereGeometry args={[0.07, 16, 16]} />
+        <meshStandardMaterial
+          color="#818cf8"
+          emissive="#c7d2fe"
+          emissiveIntensity={0.6}
+          roughness={0.3}
+        />
+      </mesh>
+    );
+  }
+
+  return <group ref={groupRef} rotation={[0.4, 0, 0.2]}>{rings}</group>;
 }
 
 /* ─────────────────────────────────────
-   Glass shell (simplified)
+   Glass Shell (Knowledge Bubble)
    ───────────────────────────────────── */
 function GlassShell() {
   return (
     <mesh>
       <sphereGeometry args={[2.6, 64, 64]} />
       <meshPhysicalMaterial
-        color="#e0ecff"
+        color="#e0e7ff"
         transparent
         opacity={0.06}
         roughness={0.1}
@@ -114,19 +124,14 @@ function GlassShell() {
 /* ─────────────────────────────────────
    Bloom Scene (assembled logo)
    ───────────────────────────────────── */
-function BloomScene() {
-  const groupRef = useRef<THREE.Group>(null!);
-
-  useFrame((_, delta) => {
-    groupRef.current.rotation.y += delta * 0.12;
-  });
-
+function LogoScene() {
   return (
-    <Float speed={1.5} rotationIntensity={0.15} floatIntensity={0.4}>
-      <group ref={groupRef}>
+    <Float floatIntensity={1.5} rotationIntensity={0.4} speed={1.2}>
+      <group>
+        {/* Core */}
         <CentralDiamond />
 
-        {/* Inner bold ring */}
+        {/* Inner intense ring */}
         <Ring radius={1.4} tube={0.055} opacity={0.92} speed={0.25} tiltX={Math.PI / 2} tiltZ={0.2} />
 
         {/* Outer lighter ring */}
@@ -153,17 +158,31 @@ export default function Logo3D({ className }: { className?: string }) {
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         style={{ background: "transparent" }}
         dpr={[1, 2]}
-        frameloop="always"
       >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[5, 8, 5]} intensity={1.4} castShadow />
-        <pointLight position={[-4, -2, 3]} intensity={0.5} color="#60A5FA" />
-
-        <BloomScene />
-
         <Suspense fallback={null}>
-          <ContactShadows position={[0, -2.5, 0]} opacity={0.2} scale={10} blur={2.5} />
-          <Environment preset="city" />
+          <ambientLight intensity={0.7} />
+          <spotLight
+            position={[10, 10, 10]}
+            angle={0.25}
+            penumbra={1}
+            intensity={1.2}
+            castShadow
+          />
+          <pointLight position={[-10, 5, -10]} intensity={0.8} color="#818cf8" />
+
+          <LogoScene />
+
+          <Environment preset="city" blur={0.8} />
+
+          <ContactShadows
+            rotation-x={Math.PI / 2}
+            position={[0, -3.2, 0]}
+            opacity={0.25}
+            width={10}
+            height={10}
+            blur={1.5}
+            far={4.5}
+          />
         </Suspense>
       </Canvas>
     </div>

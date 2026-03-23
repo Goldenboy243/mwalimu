@@ -9,7 +9,7 @@ interface LogoSVGProps {
 
 const LogoSVG: React.FC<LogoSVGProps> = ({
   size = 32,
-  color = "#3B82F6",
+  color = "#4f46e5",
   strokeWidth = 6,
   className,
 }) => (

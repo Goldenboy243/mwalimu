@@ -3,18 +3,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import Image from "next/image";
 import { useTranslation } from "react-i18next";
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowRight, Code, Terminal, Database, Star, Users, CheckCircle, Smartphone, Braces, Brain, Layout, Monitor } from "lucide-react";
 import LogoSVG from "@/components/logo/LogoSVG";
 
-/* Lazy-load the 3D logo — heavy WebGL bundle */
+/* Lazy-load the 3D logo */
 const Logo3D = dynamic(() => import("@/components/logo/Logo3D"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[420px] flex items-center justify-center">
+    <div className="w-full h-[400px] flex items-center justify-center">
       <div className="animate-pulse">
-        <LogoSVG size={120} />
+        <LogoSVG size={120} color="#4f46e5" />
       </div>
     </div>
   ),
@@ -23,7 +22,7 @@ const Logo3D = dynamic(() => import("@/components/logo/Logo3D"), {
 /* ── Animated counter hook ── */
 function useCountUp(target: number, duration = 2000) {
   const [count, setCount] = useState(0);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
   const counted = useRef(false);
 
   useEffect(() => {
@@ -38,7 +37,6 @@ function useCountUp(target: number, duration = 2000) {
           const animate = (now: number) => {
             const elapsed = now - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            // ease-out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
             setCount(Math.round(eased * target));
             if (progress < 1) requestAnimationFrame(animate);
@@ -55,388 +53,321 @@ function useCountUp(target: number, duration = 2000) {
   return { count, ref };
 }
 
-/* ── Stats data ── */
-const STATS = [
-  { target: 500, suffix: "+", label: "Students Learning", desc: "on our platform" },
-  { target: 10, suffix: "+", label: "Countries", desc: "across Africa & beyond" },
-  { target: 4.8, suffix: "", label: "User Rating", desc: "out of 5 stars", decimal: true },
-  { target: 10, suffix: "+", label: "Courses", desc: "and growing" },
-];
-
-function StatItem({ target, suffix, label, desc, decimal }: { target: number; suffix: string; label: string; desc: string; decimal?: boolean }) {
-  const { count, ref } = useCountUp(decimal ? target * 10 : target, 2200);
-  const display = decimal ? (count / 10).toFixed(1) : count;
-
+function Counter({ target, label, icon: Icon, colorClass }: { target: number; label: string; icon: any; colorClass: string }) {
+  const { count, ref } = useCountUp(target);
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-4xl sm:text-5xl font-black text-primary tracking-tighter mb-1">
-        {display}{suffix}
+    <div className="text-center group hover:-translate-y-2 transition-transform duration-300">
+      <div className={`w-12 h-12 mx-auto mb-4 rounded-xl flex items-center justify-center ${colorClass}`}>
+        <Icon size={24} />
       </div>
-      <div className="text-sm font-bold text-foreground/80 mb-0.5">{label}</div>
-      <div className="text-xs text-foreground/40">{desc}</div>
+      <p className="text-4xl font-extrabold text-slate-900 mb-2 flex justify-center items-center">
+        <span ref={ref}>{count}</span>+
+      </p>
+      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{label}</p>
     </div>
   );
 }
-
-function StatsCounter() {
-  return (
-    <section className="py-16 lg:py-20 border-t border-border bg-surface">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
-          {STATS.map((stat, i) => (
-            <StatItem key={i} {...stat} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── FAQ Accordion Item ── */
-function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="border border-border rounded-xl overflow-hidden transition-all duration-200 hover:border-primary/20">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-6 py-4 text-left bg-surface hover:bg-surface-elevated transition-colors"
-      >
-        <span className="text-sm font-semibold text-foreground/80 pr-4">{question}</span>
-        <ChevronDown
-          size={18}
-          className={`shrink-0 text-foreground/40 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
-        />
-      </button>
-      <div
-        className={`overflow-hidden transition-all duration-300 ${open ? "max-h-48" : "max-h-0"}`}
-      >
-        <div className="px-6 pb-4 pt-1 text-sm text-foreground/50 leading-relaxed">{answer}</div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Course card data ── */
-const COURSES = [
-  {
-    logo: "/logos/python-logo.svg",
-    title: "Python",
-    level: "Beginner",
-    lessons: 24,
-    desc: "Learn Python from scratch — variables, loops, functions, and real projects.",
-    slug: "python",
-    bg: "bg-[#306998]/5 dark:bg-[#306998]/10",
-    border: "hover:border-[#306998]/40",
-  },
-  {
-    logo: "/logos/word-logo.svg",
-    title: "Microsoft Word",
-    level: "Beginner",
-    lessons: 10,
-    desc: "Create professional documents — formatting, tables, headers, and page layouts.",
-    slug: "word",
-    bg: "bg-[#185ABD]/5 dark:bg-[#185ABD]/10",
-    border: "hover:border-[#185ABD]/40",
-  },
-  {
-    logo: "/logos/excel-logo.svg",
-    title: "Microsoft Excel",
-    level: "Beginner",
-    lessons: 12,
-    desc: "Master spreadsheets — formulas, charts, data analysis, and pivot tables.",
-    slug: "excel",
-    bg: "bg-[#107C41]/5 dark:bg-[#107C41]/10",
-    border: "hover:border-[#107C41]/40",
-  },
-  {
-    logo: "/logos/powerpoint-logo.svg",
-    title: "PowerPoint",
-    level: "Beginner",
-    lessons: 8,
-    desc: "Design impactful presentations — slides, animations, and visual storytelling.",
-    slug: "powerpoint",
-    bg: "bg-[#C43E1C]/5 dark:bg-[#C43E1C]/10",
-    border: "hover:border-[#C43E1C]/40",
-  },
-];
-
-/* ── How-it-works steps ── */
-const STEPS = [
-  {
-    number: "01",
-    title: "Choose a Course",
-    desc: "Pick from our growing library of guided courses tailored for African learners.",
-  },
-  {
-    number: "02",
-    title: "Read & Practice",
-    desc: "Follow step-by-step instructions while working in the live sandbox environment.",
-  },
-  {
-    number: "03",
-    title: "Get Instant Feedback",
-    desc: "Click Verify and our AI checks your work, highlights errors, and suggests fixes.",
-  },
-  {
-    number: "04",
-    title: "Master & Progress",
-    desc: "Complete lessons, earn badges, and advance to more challenging material at your pace.",
-  },
-];
 
 export default function HomePage() {
   const { t } = useTranslation();
 
   return (
-    <main className="min-h-screen pt-16">
-      {/* ════════════════════════════════════
-          HERO SECTION
-         ════════════════════════════════════ */}
-      <section id="home" className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-20 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-blue-600/8 rounded-full blur-3xl" />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 py-20 lg:py-28">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-1 bg-primary rounded-full" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40">Learn-by-Doing Platform</span>
-              </div>
-
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tighter leading-[0.92] mb-6">
-                {t("hero_title")}
-                <br />
-                <span className="text-primary">{t("hero_highlight")}</span>
-              </h1>
-
-              <p className="text-lg text-foreground/50 max-w-lg leading-relaxed mb-10">{t("hero_description")}</p>
-
-              <div className="flex flex-wrap gap-4">
-                <Link href="/workspace?course=python" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/25">
-                  {t("get_started")}
-                </Link>
-                <a href="#courses" className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl border border-border font-bold text-sm text-foreground/70 hover:border-primary/40 hover:text-primary transition-all duration-300">
-                  Browse Courses
-                </a>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center">
-              <Logo3D className="w-full h-[380px] lg:h-[460px]" />
-            </div>
+    <main className="overflow-x-hidden pt-20">
+      {/* ── Hero Section ── */}
+      <section className="relative pb-20 pt-16 px-6 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 min-h-[90vh]">
+        <div className="lg:w-1/2 z-10 w-full">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full font-bold text-[11px] uppercase tracking-widest mb-8 border border-indigo-100 animate-fade-in-up">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+            </span>
+            Iterative Learning Platform
           </div>
-        </div>
-      </section>
+          
+          <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.05] tracking-tight mb-8 animate-fade-in-up [animation-delay:100ms]">
+            Master Skills.<br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">Build Futures.</span>
+          </h1>
+          
+          <p className="text-xl text-slate-500 mb-10 max-w-xl leading-relaxed animate-fade-in-up [animation-delay:200ms]">
+            From <span className="font-semibold text-slate-700">Python</span> algorithms to <span className="font-semibold text-slate-700">Excel</span> financial models. Mwalimu is the interactive platform that teaches you by doing, not just watching.
+          </p>
 
-      {/* ════════════════════════════════════
-          ANIMATED STATS
-         ════════════════════════════════════ */}
-      <StatsCounter />
-
-      {/* ════════════════════════════════════
-          OUR COURSES
-         ════════════════════════════════════ */}
-      <section id="courses" className="py-20 lg:py-28 border-t border-border">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-8 h-0.5 bg-primary rounded-full" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40">Explore</span>
-              <div className="w-8 h-0.5 bg-primary rounded-full" />
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter mb-4">Our Courses</h2>
-            <p className="text-foreground/50 max-w-xl mx-auto leading-relaxed">Practical, project-based courses designed for real-world skills. Start from zero and build your way up.</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            {COURSES.map((course, i) => (
-              <Link
-                key={i}
-                href={`/workspace?course=${course.slug}`}
-                className={`group relative flex items-start gap-5 p-6 rounded-2xl ${course.bg} border border-border ${course.border} hover:shadow-xl hover:shadow-black/5 transition-all duration-300 hover:-translate-y-0.5`}
-              >
-                {/* Logo */}
-                <div className="shrink-0 mt-0.5">
-                  <Image src={course.logo} alt={course.title} width={48} height={48} className="rounded-lg" />
-                </div>
-
-                {/* Text */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <h3 className="font-bold text-base">{course.title}</h3>
-                    <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-primary/10 text-primary">{course.level}</span>
-                  </div>
-                  <p className="text-sm text-foreground/50 leading-relaxed mb-3">{course.desc}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-foreground/35">{course.lessons} lessons</span>
-                    <span className="text-xs font-bold text-primary flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      Start learning <ArrowRight size={12} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════
-          HOW IT WORKS
-         ════════════════════════════════════ */}
-      <section id="how-it-works" className="py-20 lg:py-28 bg-surface border-y border-border">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-8 h-0.5 bg-primary rounded-full" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40">Process</span>
-              <div className="w-8 h-0.5 bg-primary rounded-full" />
-            </div>
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter mb-4">How It Works</h2>
-            <p className="text-foreground/50 max-w-xl mx-auto leading-relaxed">Four simple steps from beginner to confident practitioner.</p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {STEPS.map((step, i) => (
-              <div key={i} className="relative">
-                {i < STEPS.length - 1 && (
-                  <div className="hidden lg:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-40px)] h-px bg-gradient-to-r from-border to-transparent" />
-                )}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center mb-5">
-                    <span className="text-xl font-black text-primary">{step.number}</span>
-                  </div>
-                  <h3 className="font-bold text-lg mb-2">{step.title}</h3>
-                  <p className="text-sm text-foreground/50 leading-relaxed max-w-[240px]">{step.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-14">
-            <Link href="/workspace?course=python" className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-primary text-white font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/25">
-              Try It Now
-              <ArrowRight size={16} />
+          <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up [animation-delay:300ms]">
+            <Link href="/auth" className="px-8 py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 hover:shadow-xl hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group">
+              Start Learning Free 
+              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link href="/how-it-works" className="px-8 py-4 bg-white text-slate-900 font-bold rounded-xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all flex items-center justify-center">
+              View Curriculum
             </Link>
           </div>
         </div>
+
+        <div className="lg:w-1/2 relative h-[500px] w-full animate-float-slow z-0 flex items-center justify-center mt-[-40px]">
+          {/* Background decoration */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-100 rounded-full filter blur-[100px] opacity-50"></div>
+          <div className="relative z-10 w-full h-full">
+            <Logo3D />
+          </div>
+          
+          {/* Floating badges */}
+          <div className="absolute top-20 right-0 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-yellow-100 animate-float-med hidden lg:block">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-600">
+                <Code size={20} />
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-bold">New Course</p>
+                <p className="text-sm font-bold text-slate-900">Python for Beginners</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-20 left-0 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-purple-100 animate-float-fast hidden lg:block">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+                 <Braces size={20} />
+              </div>
+              <div>
+                <p className="text-xs text-slate-500 font-bold">Popular</p>
+                <p className="text-sm font-bold text-slate-900">Data Structures</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* ════════════════════════════════════
-          FAQ + CONTACT
-         ════════════════════════════════════ */}
-      <section id="contact" className="py-20 lg:py-28 border-t border-border">
+      {/* ── Stats Section ── */}
+      <section className="py-20 border-y border-slate-100 bg-slate-50/50">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
+          <Counter target={2500} label="Active Learners" icon={Users} colorClass="bg-indigo-100 text-indigo-600" />
+          <Counter target={120} label="Coding Challenges" icon={Terminal} colorClass="bg-rose-100 text-rose-600" />
+          <Counter target={500} label="Certificates Earned" icon={CheckCircle} colorClass="bg-emerald-100 text-emerald-600" />
+          <Counter target={15} label="Expert Courses" icon={Brain} colorClass="bg-orange-100 text-orange-600" />
+        </div>
+      </section>
+
+      {/* ── Features List (Why Mwalimu, Redesigned to left/right layout instead of centered) ── */}
+      <section className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-8 h-0.5 bg-primary rounded-full" />
-              <span className="text-[10px] font-black uppercase tracking-[0.4em] text-foreground/40">Support</span>
-              <div className="w-8 h-0.5 bg-primary rounded-full" />
+          <div className="flex flex-col lg:flex-row gap-16 items-start">
+            {/* Left Header / Context */}
+            <div className="lg:w-1/3 sticky top-32">
+               <span className="text-indigo-600 font-bold tracking-widest uppercase text-sm mb-4 block">The Mwalimu Advantage</span>
+               <h2 className="text-4xl lg:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                 Why Choose Mwalimu?
+               </h2>
+               <p className="text-lg text-slate-500 leading-relaxed mb-8">
+                 We combine the best of interactive learning with professional-grade tools, completely avoiding the boring video-only approach. Learn by practicing locally without configuring any environment.
+               </p>
+               <Link href="/about-us" className="inline-flex items-center gap-2 text-indigo-600 font-bold hover:gap-3 transition-all">
+                 Read our mission <ArrowRight size={20} />
+               </Link>
             </div>
-            <h2 className="text-4xl sm:text-5xl font-black tracking-tighter mb-4">Frequently Asked Questions</h2>
-            <p className="text-foreground/50 max-w-xl mx-auto leading-relaxed">Got questions? We&apos;ve got answers. If you don&apos;t find what you need, reach out below.</p>
-          </div>
-
-          {/* FAQ Accordion */}
-          <div className="max-w-3xl mx-auto mb-16 space-y-3">
-            <FAQItem question="Is Mwalimu free to use?" answer="Yes! All courses and the practice workspace are completely free. We believe quality education should be accessible to everyone." />
-            <FAQItem question="Do I need to install anything?" answer="No installation needed. Mwalimu runs entirely in your browser. Just open the website, pick a course, and start learning immediately." />
-            <FAQItem question="What courses are available?" answer="We currently offer Python programming, Microsoft Word, Excel, and PowerPoint. More courses are being added regularly." />
-            <FAQItem question="Can I learn on my phone?" answer="Mwalimu works on tablets and desktops. For the best experience with the practice workspace, we recommend using a laptop or desktop computer." />
-            <FAQItem question="How does the feedback system work?" answer="After completing an exercise, click 'Verify My Work' and our AI-powered system checks your work instantly, highlights errors, and suggests improvements." />
-            <FAQItem question="Is there a certificate after completion?" answer="We are working on adding certificates and badges for course completion. This feature will be available soon!" />
-          </div>
-
-          {/* Contact bar */}
-          <div className="max-w-3xl mx-auto rounded-2xl bg-surface border border-border p-8 sm:p-10">
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-bold mb-2">Still have questions?</h3>
-              <p className="text-sm text-foreground/50">Our team is here to help. Reach out through any of these channels.</p>
-            </div>
-            <div className="grid sm:grid-cols-3 gap-6 text-center">
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-foreground/30 mb-1">Email</p>
-                <a href="mailto:support@mwalimu.app" className="text-sm text-primary hover:underline font-medium">support@mwalimu.app</a>
+            
+            {/* Right Cards Stack */}
+            <div className="lg:w-2/3 flex flex-col gap-6">
+              <div className="flex gap-6 p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:border-indigo-100 transition-all duration-300">
+                <div className="w-16 h-16 shrink-0 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl">
+                  <Terminal />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Live Coding Environments</h3>
+                  <p className="text-slate-600 leading-relaxed text-lg">Run Python, build Excel sheets, and design slides directly in your browser. No setup required.</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-foreground/30 mb-1">Phone</p>
-                <span className="text-sm text-foreground/60 font-medium">+243 81 000 0000</span>
+              
+              <div className="flex gap-6 p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:border-emerald-100 transition-all duration-300">
+                <div className="w-16 h-16 shrink-0 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl">
+                  <Database />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Project-Based</h3>
+                  <p className="text-slate-600 leading-relaxed text-lg">Build real things. From a budget tracker in Excel to a web scraper in Python. Learn by creating.</p>
+                </div>
               </div>
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest text-foreground/30 mb-1">Location</p>
-                <span className="text-sm text-foreground/60 font-medium">Kinshasa, DRC</span>
+
+              <div className="flex gap-6 p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-lg hover:border-orange-100 transition-all duration-300">
+                <div className="w-16 h-16 shrink-0 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-2xl">
+                  <CheckCircle />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Instant Feedback</h3>
+                  <p className="text-slate-600 leading-relaxed text-lg">Our automated tests check your code and documents instantly, giving you specific hints on how to improve.</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          FOOTER
-         ════════════════════════════════════ */}
-      <footer className="border-t border-border bg-surface">
-        <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-            {/* Brand col */}
-            <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-2 mb-4">
-                <LogoSVG size={24} />
-                <span className="text-base font-extrabold tracking-tighter bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">Mwalimu</span>
+      {/* ── Tracks Wrapper ── */}
+      <div className="flex flex-col">
+        {/* 1. Programming Track (Python/DSA) */}
+        <section className="py-24 bg-[#1e1b4b] text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-500 rounded-full blur-[150px] opacity-20 pointer-events-none"></div>
+          <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16 relative z-10 w-full">
+            <div className="lg:w-1/2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full border border-white/20 text-xs font-bold uppercase tracking-widest text-indigo-100 mb-6">
+                <Code size={14} /> Programming Track
               </div>
-              <p className="text-sm text-foreground/40 leading-relaxed">An iterative learn-by-doing platform. Master programming and digital skills through guided practice.</p>
+              <h2 className="text-4xl lg:text-6xl font-extrabold mb-6 leading-tight">Think in <br/><span className="text-yellow-400 italic">Code.</span></h2>
+              <p className="text-xl text-indigo-100 opacity-90 mb-8 leading-relaxed max-w-xl">
+                Don't just copy tutorials. Solve real algorithmic problems. From mastering Python syntax to cracking complex Data Structures & Algorithms.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-10">
+                 {["Python Basics", "Arrays & Linked Lists", "Recursion", "Trees & Graphs"].map((tag) => (
+                   <span key={tag} className="px-4 py-2 bg-white/10 border border-white/10 rounded-lg text-sm font-semibold">{tag}</span>
+                 ))}
+              </div>
+              <Link href="/courses/python" className="inline-block px-8 py-4 bg-yellow-400 text-slate-900 font-black rounded-xl hover:bg-yellow-300 hover:scale-105 transition-all shadow-lg">
+                  Start Python
+              </Link>
             </div>
-
-            {/* Courses col */}
-            <div>
-              <h4 className="text-xs font-black uppercase tracking-widest text-foreground/30 mb-4">Courses</h4>
-              <ul className="space-y-2.5">
-                {["Python", "Microsoft Word", "Microsoft Excel", "PowerPoint"].map((c, i) => (
-                  <li key={i}>
-                    <Link href={`/workspace?course=${["python","word","excel","powerpoint"][i]}`} className="text-sm text-foreground/50 hover:text-primary transition-colors">{c}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Platform col */}
-            <div>
-              <h4 className="text-xs font-black uppercase tracking-widest text-foreground/30 mb-4">Platform</h4>
-              <ul className="space-y-2.5">
-                <li><a href="#home" className="text-sm text-foreground/50 hover:text-primary transition-colors">Home</a></li>
-                <li><a href="#courses" className="text-sm text-foreground/50 hover:text-primary transition-colors">Browse Courses</a></li>
-                <li><a href="#how-it-works" className="text-sm text-foreground/50 hover:text-primary transition-colors">How It Works</a></li>
-                <li><Link href="/workspace?course=python" className="text-sm text-foreground/50 hover:text-primary transition-colors">Workspace</Link></li>
-              </ul>
-            </div>
-
-            {/* Support col */}
-            <div>
-              <h4 className="text-xs font-black uppercase tracking-widest text-foreground/30 mb-4">Support</h4>
-              <ul className="space-y-2.5">
-                <li><a href="mailto:support@mwalimu.app" className="text-sm text-foreground/50 hover:text-primary transition-colors">support@mwalimu.app</a></li>
-                <li><span className="text-sm text-foreground/50">+243 81 000 0000</span></li>
-                <li><span className="text-sm text-foreground/50">Kinshasa, DRC</span></li>
-              </ul>
-              <div className="mt-5">
-                <h4 className="text-xs font-black uppercase tracking-widest text-foreground/30 mb-2">Having issues?</h4>
-                <p className="text-xs text-foreground/40 leading-relaxed">Reach out to our support team via email and we&apos;ll get back to you within 24 hours.</p>
+            <div className="lg:w-1/2 w-full">
+              <div className="bg-[#0f172a] rounded-2xl shadow-2xl border border-slate-700 p-2 rotate-2 hover:rotate-0 transition-transform duration-500">
+                 <div className="rounded-xl overflow-hidden relative">
+                    <div className="bg-slate-800 p-4 flex items-center gap-2 border-b border-slate-700">
+                       <div className="flex gap-2 mr-4">
+                          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                       </div>
+                       <span className="text-xs font-mono text-slate-400">solution.py</span>
+                    </div>
+                    <div className="p-6 font-mono text-sm leading-relaxed text-slate-300 bg-[#0f172a] h-[280px]">
+                       <p><span className="text-purple-400">def</span> <span className="text-blue-400">binary_search</span>(arr, target):</p>
+                       <p className="pl-4">low, high = <span className="text-orange-400">0</span>, <span className="text-blue-400">len</span>(arr) - <span className="text-orange-400">1</span></p>
+                       <p className="pl-4">while low &lt;= high:</p>
+                       <p className="pl-8">mid = (low + high) // <span className="text-orange-400">2</span></p>
+                       <p className="pl-8"><span className="text-purple-400">if</span> arr[mid] == target:</p>
+                       <p className="pl-12"><span className="text-purple-400">return</span> mid</p>
+                       <p className="pl-8"><span className="text-purple-400">elif</span> arr[mid] &lt; target:</p>
+                       <p className="pl-12">low = mid + <span className="text-orange-400">1</span></p>
+                       <p className="pl-8"><span className="text-purple-400">else</span>:</p>
+                       <p className="pl-12">high = mid - <span className="text-orange-400">1</span></p>
+                       <p className="pl-4"><span className="text-purple-400">return</span> -<span className="text-orange-400">1</span></p>
+                    </div>
+                 </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Bottom bar */}
-          <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p className="text-xs text-foreground/30">&copy; 2026 Mwalimu. All rights reserved.</p>
-            <div className="flex items-center gap-6">
-              <a href="#" className="text-xs text-foreground/30 hover:text-foreground/60 transition-colors">Privacy Policy</a>
-              <a href="#" className="text-xs text-foreground/30 hover:text-foreground/60 transition-colors">Terms of Service</a>
+        {/* 2. Web Development / Design Track */}
+        <section className="py-24 bg-rose-50 text-slate-900 border-b border-rose-100 relative">
+           <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row-reverse items-center gap-16 relative z-10 w-full">
+            <div className="lg:w-1/2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-rose-100 rounded-full border border-rose-200 text-xs font-bold uppercase tracking-widest text-rose-600 mb-6">
+                <Layout size={14} /> Web Development Track
+              </div>
+              <h2 className="text-4xl lg:text-6xl font-extrabold mb-6 leading-tight">Build the <br/><span className="text-rose-500 italic">Web.</span></h2>
+              <p className="text-xl text-slate-600 mb-8 leading-relaxed max-w-xl">
+                 Craft beautiful user interfaces from scratch using modern HTML, CSS, and interactive JavaScript. Understand the fabric of the internet.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-10">
+                 {["Responsive Design", "Flexbox/Grid", "DOM Manipulation", "Modern JavaScript"].map((tag) => (
+                   <span key={tag} className="px-4 py-2 bg-white border border-rose-100 text-rose-800 rounded-lg text-sm font-semibold">{tag}</span>
+                 ))}
+              </div>
+              <Link href="/courses/web-dev" className="inline-block px-8 py-4 bg-rose-500 text-white font-black rounded-xl hover:bg-rose-600 hover:shadow-[0_20px_40px_rgba(244,63,94,0.3)] hover:scale-105 transition-all">
+                Start Web Dev
+              </Link>
             </div>
-          </div>
+            
+            <div className="lg:w-1/2 relative group w-full">
+              <div className="relative bg-white border border-slate-200 rounded-[2rem] p-4 shadow-xl rotate-[2deg] group-hover:rotate-0 transition-transform duration-500">
+                 <div className="bg-slate-50 rounded-xl overflow-hidden border border-slate-200">
+                   <div className="bg-slate-200 p-3 flex gap-2">
+                       <div className="w-3 h-3 rounded-full bg-slate-300"></div>
+                       <div className="w-3 h-3 rounded-full bg-slate-300"></div>
+                       <div className="w-3 h-3 rounded-full bg-slate-300"></div>
+                   </div>
+                   <div className="p-6 h-[250px] flex items-center justify-center">
+                       <div className="text-center">
+                           <div className="w-20 h-20 bg-rose-500 rounded-2xl mx-auto mb-4 animate-bounce"></div>
+                           <p className="font-bold text-slate-700 text-xl font-mono">&lt;div class="box"&gt;&lt;/div&gt;</p>
+                       </div>
+                   </div>
+                 </div>
+              </div>
+            </div>
+           </div>
+        </section>
+
+        {/* 3. Productivity Track (Excel/Word) */}
+        <section className="py-24 bg-slate-900 text-white relative">
+           <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald-600 rounded-full blur-[100px] opacity-20 pointer-events-none"></div>
+
+           <div className="max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center gap-16 relative z-10 w-full">
+            <div className="lg:w-1/2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-900/50 rounded-full border border-emerald-500/50 text-xs font-bold uppercase tracking-widest text-emerald-300 mb-6">
+                <Smartphone size={14} /> Productivity Track
+              </div>
+              <h2 className="text-4xl lg:text-6xl font-extrabold mb-6 leading-tight">Work Smarter, <br/><span className="text-emerald-400 italic">Not Harder.</span></h2>
+              <p className="text-xl text-slate-300 mb-8 leading-relaxed max-w-xl">
+                 Office tools are the backbone of modern business. Master Excel, Word, and PowerPoint to boost your productivity and value.
+              </p>
+              <div className="flex flex-wrap gap-3 mb-10">
+                 {["Advanced Excel", "Report Writing", "Presentation Design", "Data Analysis"].map((tag) => (
+                   <span key={tag} className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm font-semibold">{tag}</span>
+                 ))}
+              </div>
+              <Link href="/courses/excel" className="inline-block px-8 py-4 bg-emerald-500 text-white font-black rounded-xl hover:bg-emerald-600 hover:shadow-[0_20px_40px_rgba(16,185,129,0.3)] hover:scale-105 transition-all">
+                Master Office Tools
+              </Link>
+            </div>
+            
+            <div className="lg:w-1/2 relative group w-full">
+              <div className="absolute -inset-4 bg-emerald-500/20 rounded-[2.5rem] blur-xl transition-all duration-500"></div>
+              <div className="relative bg-white border border-slate-200 rounded-[2rem] p-4 shadow-2xl rotate-[-2deg] group-hover:rotate-0 transition-transform duration-500">
+                 <div className="bg-white rounded-xl overflow-hidden border border-slate-200">
+                   <div className="grid grid-cols-5 border-b border-slate-200 bg-slate-50">
+                      <div className="p-3 border-r border-slate-200 text-xs font-bold text-slate-400">A1</div>
+                      <div className="p-3 border-r border-slate-200 col-span-4 text-xs font-mono text-emerald-600">=SUM(B2:B10)</div>
+                   </div>
+                   {[...Array(5)].map((_, i) => (
+                     <div key={i} className="grid grid-cols-5 border-b border-slate-100 last:border-0">
+                        <div className="p-4 border-r border-slate-100 bg-slate-50 text-xs text-slate-400 font-bold flex items-center justify-center">{i+1}</div>
+                        <div className="p-4 border-r border-slate-100"></div>
+                        <div className="p-4 border-r border-slate-100 bg-emerald-50/30"></div>
+                        <div className="p-4 border-r border-slate-100"></div>
+                        <div className="p-4"></div>
+                     </div>
+                   ))}
+                 </div>
+              </div>
+            </div>
+           </div>
+        </section>
+      </div>
+
+      {/* ── CTA Final ── */}
+      <section className="py-24 px-6 bg-slate-50">
+        <div className="max-w-5xl mx-auto bg-gradient-to-br from-indigo-900 to-slate-900 rounded-[3rem] p-12 lg:p-20 text-center relative overflow-hidden shadow-2xl group">
+             {/* Gradient glow top border */}
+             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+             
+             {/* Background Pattern */}
+             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "30px 30px" }}></div>
+             
+             <div className="relative z-10">
+               <h2 className="text-4xl lg:text-6xl font-black text-white mb-8 tracking-tight">Ready to Upgrade Your Skills?</h2>
+               <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto">
+                 Join thousands of learners mastering the tools of the future with Mwalimu.
+               </p>
+               <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                 <Link href="/auth" className="px-10 py-5 bg-white text-indigo-900 font-bold text-xl rounded-2xl hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                   Start Learning Free
+                 </Link>
+                 <Link href="/about-us" className="px-10 py-5 text-white font-bold text-xl rounded-2xl border border-white/20 hover:bg-white/10 transition-all">
+                   Meet the Team
+                 </Link>
+               </div>
+             </div>
         </div>
-      </footer>
+      </section>
     </main>
   );
 }

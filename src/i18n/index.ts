@@ -6,9 +6,9 @@ const resources = {
   en: {
     translation: {
       brand: "Mwalimu",
-      tagline: "Learn by doing. Grow without limits.",
-      hero_title: "The future of",
-      hero_highlight: "learning",
+      tagline: "Empowering the Next Generation.",
+      hero_title: "Master Skills.",
+      hero_highlight: "Build Futures.",
       hero_description:
         "An iterative learn-by-doing platform. Master programming, office tools, and digital skills through guided practice.",
       get_started: "Get Started",

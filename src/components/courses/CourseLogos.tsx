@@ -21,10 +21,12 @@ export function PythonLogo({ size = 48 }: { size?: number }) {
 export function WordLogo({ size = 48 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="6" width="40" height="36" rx="4" fill="#185ABD"/>
-      <rect x="20" y="6" width="24" height="36" rx="2" fill="#2B7CD3"/>
-      <path d="M10 14h10v2H10zM10 20h10v2H10zM10 26h10v2H10zM10 32h10v2H10z" fill="rgba(255,255,255,0.3)"/>
-      <text x="30" y="30" fill="white" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="18" textAnchor="middle">W</text>
+      {/* Background document */}
+      <rect x="8" y="4" width="32" height="40" rx="4" fill="#E2EAFC" />
+      <path d="M16 14h16M16 20h16M16 26h16M16 32h10" stroke="#B0C4DE" strokeWidth="2" strokeLinecap="round"/>
+      {/* Front Blue Square */}
+      <rect x="4" y="14" width="22" height="22" rx="4" fill="#2B579A" />
+      <text x="15" y="29" fill="white" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="14" textAnchor="middle">W</text>
     </svg>
   );
 }
@@ -32,11 +34,13 @@ export function WordLogo({ size = 48 }: { size?: number }) {
 export function ExcelLogo({ size = 48 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="6" width="40" height="36" rx="4" fill="#107C41"/>
-      <rect x="20" y="6" width="24" height="36" rx="2" fill="#21A366"/>
-      {/* Grid lines */}
-      <path d="M22 14h18M22 20h18M22 26h18M22 32h18M30 10v30M38 10v30" stroke="rgba(255,255,255,0.2)" strokeWidth="1"/>
-      <text x="12" y="30" fill="white" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="16" textAnchor="middle">X</text>
+      {/* Background document */}
+      <rect x="8" y="4" width="32" height="40" rx="4" fill="#D3F9D8" />
+      <path d="M14 14h20v20H14V14z" fill="#A8E6CF" />
+      <path d="M14 20h20M14 27h20M21 14v20M28 14v20" stroke="#8DE0B6" strokeWidth="1.5" />
+      {/* Front Green Square */}
+      <rect x="4" y="14" width="22" height="22" rx="4" fill="#188941" />
+      <text x="15" y="29" fill="white" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="14" textAnchor="middle">X</text>
     </svg>
   );
 }
@@ -44,12 +48,12 @@ export function ExcelLogo({ size = 48 }: { size?: number }) {
 export function PowerPointLogo({ size = 48 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="4" y="6" width="40" height="36" rx="4" fill="#C43E1C"/>
-      <rect x="20" y="6" width="24" height="36" rx="2" fill="#E04E2C"/>
-      {/* Slide representation */}
-      <rect x="24" y="12" width="16" height="10" rx="1" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5"/>
-      <rect x="24" y="25" width="16" height="10" rx="1" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.2)" strokeWidth="0.5"/>
-      <text x="12" y="30" fill="white" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="16" textAnchor="middle">P</text>
+      {/* Background document */}
+      <rect x="8" y="4" width="32" height="40" rx="4" fill="#FFE8CC" />
+      <rect x="14" y="14" width="20" height="14" rx="2" fill="#FFA94D" opacity="0.4" />
+      {/* Front Orange Square */}
+      <rect x="4" y="14" width="22" height="22" rx="4" fill="#D24726" />
+      <text x="15" y="29" fill="white" fontFamily="Arial, sans-serif" fontWeight="bold" fontSize="14" textAnchor="middle">P</text>
     </svg>
   );
 }

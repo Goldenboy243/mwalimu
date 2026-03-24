@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import LogoSVG from "@/components/logo/LogoSVG";
 import LanguageSelector from "./LanguageSelector";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LayoutGrid } from "lucide-react";
 import { WordLogo, ExcelLogo, PythonLogo, PowerPointLogo, WebDevLogo, DigitalLiteracyLogo } from "@/components/courses/CourseLogos";
 
 export default function Header() {
@@ -35,78 +35,70 @@ export default function Header() {
             <button className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors py-4">
               Courses <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
             </button>
-            <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[600px] bg-white rounded-2xl shadow-xl border border-slate-100 p-6 opacity-0 invisible translate-y-4 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 cursor-default">
-              <div className="mb-4 pb-2 border-b border-slate-100">
-                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Available Tracks</p>
+            <div className="absolute top-[80%] left-1/2 -translate-x-1/2 w-[800px] bg-white rounded-[2rem] shadow-2xl border border-slate-100 p-8 opacity-0 invisible translate-y-4 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-50 cursor-default">
+              <div className="flex justify-between items-start mb-8">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900 tracking-widest uppercase mb-2">Learning Modules</h3>
+                  <p className="text-sm text-slate-500 font-medium">Select an application to start your interactive lab.</p>
+                </div>
+                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 shrink-0">
+                  <LayoutGrid className="w-5 h-5 text-slate-400" />
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                {/* Productivity Track */}
-                <div className="col-span-2 mt-2 mb-1 border-b border-slate-100 pb-2">
-                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Productivity Track</p>
-                </div>
-                <Link href="/courses/word" className="group/card flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="shrink-0 transition-transform group-hover/card:scale-110">
-                    <WordLogo size={42} />
+              
+              <div className="grid grid-cols-3 gap-6">
+                {/* Word Card */}
+                <Link href="/courses/word" className="group/card bg-white rounded-3xl p-6 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_12px_40px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-blue-50 flex items-center justify-center mb-6 overflow-hidden">
+                     <WordLogo size={36} />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover/card:text-blue-600 transition-colors">Microsoft Word</h4>
-                    <p className="text-xs text-slate-500">Document Processing</p>
-                  </div>
-                </Link>
-                <Link href="/courses/excel" className="group/card flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="shrink-0 transition-transform group-hover/card:scale-110">
-                    <ExcelLogo size={42} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover/card:text-emerald-600 transition-colors">Microsoft Excel</h4>
-                    <p className="text-xs text-slate-500">Data & Spreadsheets</p>
-                  </div>
+                  <h4 className="font-extrabold text-slate-900 text-xl mb-2">Word</h4>
+                  <p className="text-sm text-slate-500 font-medium leading-relaxed pr-4">Master professional documents.</p>
                 </Link>
 
-                {/* Programming Track */}
-                <div className="col-span-2 mt-2 mb-1 border-b border-slate-100 pb-2">
-                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Programming Track</p>
-                </div>
-                <Link href="/courses/python" className="group/card flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="shrink-0 transition-transform group-hover/card:scale-110">
-                    <PythonLogo size={42} />
+                {/* Excel Card */}
+                <Link href="/courses/excel" className="group/card bg-white rounded-3xl p-6 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_12px_40px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-emerald-50 flex items-center justify-center mb-6 overflow-hidden">
+                     <ExcelLogo size={36} />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover/card:text-yellow-600 transition-colors">Python</h4>
-                    <p className="text-xs text-slate-500">Back-end Development</p>
-                  </div>
-                </Link>
-                <Link href="/courses/web-dev" className="group/card flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="shrink-0 transition-transform group-hover/card:scale-110">
-                    <WebDevLogo size={42} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover/card:text-rose-500 transition-colors">Web Dev</h4>
-                    <p className="text-xs text-slate-500">HTML, CSS & JS</p>
-                  </div>
+                  <h4 className="font-extrabold text-slate-900 text-xl mb-2">Excel</h4>
+                  <p className="text-sm text-slate-500 font-medium leading-relaxed pr-4">Crunch data and visual charts.</p>
                 </Link>
 
-                {/* Digital Literacy Track */}
-                <div className="col-span-2 mt-2 mb-1 border-b border-slate-100 pb-2">
-                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Foundations Track</p>
-                </div>
-                <Link href="/courses/digital-literacy" className="group/card flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="shrink-0 transition-transform group-hover/card:scale-110">
-                    <DigitalLiteracyLogo size={42} />
+                {/* PowerPoint Card */}
+                <Link href="/courses/powerpoint" className="group/card bg-white rounded-3xl p-6 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_12px_40px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-orange-50 flex items-center justify-center mb-6 overflow-hidden">
+                     <PowerPointLogo size={36} />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover/card:text-slate-600 transition-colors">Digital Literacy</h4>
-                    <p className="text-xs text-slate-500">Computer Basics</p>
-                  </div>
+                  <h4 className="font-extrabold text-slate-900 text-xl mb-2">PowerPoint</h4>
+                  <p className="text-sm text-slate-500 font-medium leading-relaxed pr-4">Design stunning slide pitches.</p>
                 </Link>
-                <Link href="/courses/powerpoint" className="group/card flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors">
-                  <div className="shrink-0 transition-transform group-hover/card:scale-110">
-                    <PowerPointLogo size={42} />
+
+                {/* Python Card */}
+                <Link href="/courses/python" className="group/card bg-white rounded-3xl p-6 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_12px_40px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-amber-50 flex items-center justify-center mb-6 overflow-hidden">
+                     <PythonLogo size={36} />
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm group-hover/card:text-orange-600 transition-colors">PowerPoint</h4>
-                    <p className="text-xs text-slate-500">Presentations</p>
+                  <h4 className="font-extrabold text-slate-900 text-xl mb-2">Python</h4>
+                  <p className="text-sm text-slate-500 font-medium leading-relaxed pr-4">Back-end & App Development.</p>
+                </Link>
+
+                {/* Web Dev Card */}
+                <Link href="/courses/web-dev" className="group/card bg-white rounded-3xl p-6 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_12px_40px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-rose-50 flex items-center justify-center mb-6 overflow-hidden">
+                     <WebDevLogo size={36} />
                   </div>
+                  <h4 className="font-extrabold text-slate-900 text-xl mb-2">Web Dev</h4>
+                  <p className="text-sm text-slate-500 font-medium leading-relaxed pr-4">Become a Full-Stack expert.</p>
+                </Link>
+
+                {/* Digital Literacy Card */}
+                <Link href="/courses/digital-literacy" className="group/card bg-white rounded-3xl p-6 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] border border-slate-50 hover:shadow-[0_12px_40px_-4px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all">
+                  <div className="w-16 h-16 rounded-[1.25rem] bg-indigo-50 flex items-center justify-center mb-6 overflow-hidden">
+                     <DigitalLiteracyLogo size={36} />
+                  </div>
+                  <h4 className="font-extrabold text-slate-900 text-xl mb-2">Digital Lit.</h4>
+                  <p className="text-sm text-slate-500 font-medium leading-relaxed pr-4">Essential computer basics.</p>
                 </Link>
               </div>
             </div>
@@ -124,11 +116,14 @@ export default function Header() {
         <div className="flex items-center gap-6">
           <LanguageSelector />
           <div className="hidden sm:flex items-center gap-4">
-             <Link href="/auth" className="text-sm font-bold text-slate-600 hover:text-indigo-600 transition-colors">
-               Sign In
+             <Link href="/profile" className="px-5 py-2.5 border border-slate-300 text-slate-700 text-sm font-bold rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-all">
+               Profile
              </Link>
-             <Link href="/auth" className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-full hover:bg-indigo-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-               Get Started
+             <Link href="/admin" className="px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 hover:shadow-lg transition-all">
+               Admin
+             </Link>
+             <Link href="/auth" className="px-5 py-2.5 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 hover:shadow-lg transition-all">
+               Sign Up
              </Link>
           </div>
         </div>
